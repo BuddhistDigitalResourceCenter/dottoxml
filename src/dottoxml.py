@@ -245,7 +245,7 @@ def main():
             # Process edge
             e = dot.Edge()
             e.initFromString(l)
-            e.id = "%s_%s" % (options.PrefixForId, eid)
+            e.id = eid
             eid += 1
             if default_edge:
                 e.complementAttributes(default_edge)
@@ -291,7 +291,7 @@ def main():
         if not nodes.has_key(e.src):
             n = dot.Node()
             n.label = e.src
-            n.id = "%s_%s" % (options.PrefixForId, nid)
+            n.id = nid
             nid += 1
             nodes[e.src] = n
         if not nodes.has_key(e.dest):
