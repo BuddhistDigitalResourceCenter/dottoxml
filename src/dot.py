@@ -324,10 +324,13 @@ class Node:
         o.write("    \"%s\"\n" % self.getLabel(conf).encode(latinenc, errors="ignore"))
         o.write("  ]\n")
 
+    def getPrefixedId(self, prefix, id=None):
+        return "%s-%s" %(prefix, self.id if id is None else id)
+
     def exportGraphml(self, doc, parent, conf):        
         """ export the node in Graphml format and append it to the parent XML node """
         node = doc.createElement(u'node')
-        node.setAttribute(u'id',u'n%d' % self.id)
+        node.setAttribute(u'id',u'n%s' % self.getPrefixedId(conf.PrefixForId))
         
         data0 = doc.createElement(u'data')
         data0.setAttribute(u'key', u'd0')
@@ -418,6 +421,9 @@ class Edge:
         self.dest = ""
         self.attribs = {}
 
+    def getPrefixedId(self, prefix, id=None):
+        return "%s-%s" %(prefix, self.id if id is None else id)
+
     def initFromString(self, line):
         """ extract edge info from the given text line """
         spos = findUnquoted(line, '[')
@@ -506,9 +512,9 @@ class Edge:
     def exportGraphml(self, doc, parent, nodes, conf):
         """ export the edge in Graphml format and append it to the parent XML node """
         edge = doc.createElement(u'edge')
-        edge.setAttribute(u'id',u'e%d' % self.id)
-        edge.setAttribute(u'source',u'n%d' % nodes[self.src].id)
-        edge.setAttribute(u'target',u'n%d' % nodes[self.dest].id)
+        edge.setAttribute(u'id',u'e%s' % self.getPrefixedId(conf.PrefixForId))
+        edge.setAttribute(u'source',u'n%s' % self.getPrefixedId(prefix=conf.PrefixForId, id=nodes[self.src].id))
+        edge.setAttribute(u'target',u'n%s' % self.getPrefixedId(prefix=conf.PrefixForId, id=nodes[self.dest].id))
         
         data2 = doc.createElement(u'data')
         data2.setAttribute(u'key', u'd2')

@@ -186,6 +186,9 @@ def main():
     parser.add_option('--oenc', '--output-encoding',
                       action='store', dest='OutputEncoding', default='', metavar='ENCODING',
                       help='override encoding for text output files [default : locale setting]')
+    parser.add_option('--pfd', '--prefix-for-id',
+                      action='store', dest='PrefixForId', default='',
+                      help='Prepend prefix into node and edge id [default : empty]')
 
     options, args = parser.parse_args()
     
