@@ -186,6 +186,9 @@ def main():
     parser.add_option('--oenc', '--output-encoding',
                       action='store', dest='OutputEncoding', default='', metavar='ENCODING',
                       help='override encoding for text output files [default : locale setting]')
+    parser.add_option('--pfd', '--prefix-for-id',
+                      action='store', dest='PrefixForId', default='',
+                      help='Prepend prefix into node and edge id [default : empty]')
 
     options, args = parser.parse_args()
     
@@ -242,7 +245,7 @@ def main():
             # Process edge
             e = dot.Edge()
             e.initFromString(l)
-            e.id = eid
+            e.id = "%s_%s" % (options.PrefixForId, eid)
             eid += 1
             if default_edge:
                 e.complementAttributes(default_edge)
@@ -288,7 +291,7 @@ def main():
         if not nodes.has_key(e.src):
             n = dot.Node()
             n.label = e.src
-            n.id = nid
+            n.id = "%s_%s" % (options.PrefixForId, nid)
             nid += 1
             nodes[e.src] = n
         if not nodes.has_key(e.dest):
