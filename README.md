@@ -2,7 +2,7 @@
 
 Protégé includes the OntoGraf plugin that allows to create a visual graph display from an ontology and to export that display as a `.dot` format file.
 
-`dottoxml` converts [GraphWiz](http://www.graphviz.org) `.dot` files to `.graphml` files that can be read by [yEd](http://www.yworks.com/products/yed#).
+`dottoxml` converts [Graphviz](http://www.graphviz.org) `.dot` files to `.graphml` files that can be read by [yEd](http://www.yworks.com/products/yed#).
 
 yEd provides reasonable features for cleaning up the graphical display which is tedious and intractable for large graphs in OntoGraf.
 
