@@ -33,7 +33,7 @@ def compileAttributes(attribs):
     """ return the list of attributes as a DOT text string """
     atxt = ""
     first = True
-    for key, value in attribs.iteritems():
+    for key, value in attribs.items():
         if not first:
             atxt += ", %s=\"%s\"" % (key, value)
         else:
@@ -100,7 +100,7 @@ def getColorAttribute(attribs, key, defaultcol, conf):
         to RGB format if required
     """
     if conf.Colors:
-        if attribs.has_key(key):
+        if key in attribs:
             return colorNameToRgb(attribs[key], defaultcol)
     return defaultcol
 
@@ -245,7 +245,7 @@ class Node:
         if len(atts):
             self.attribs = parseAttributes(atts)
         # Process sections
-        if self.attribs.has_key("label"):
+        if "label" in self.attribs:
             tlabel = self.attribs["label"]
             if (tlabel != "" and     
                 tlabel.startswith('{') and
@@ -256,7 +256,7 @@ class Node:
     def getLabel(self, conf, multiline=False):
         """ return the label of the node """
         if conf.NodeLabels:
-            if self.attribs.has_key('label'):
+            if 'label' in self.attribs:
                 if len(self.sections) > 0:
                     if multiline:
                         return '\n'.join(self.sections[0])
@@ -272,7 +272,7 @@ class Node:
     def getLabelWidth(self, conf, multiline=False):
         """ return the maximum width label of the node label"""
         if conf.NodeLabels:
-            if self.attribs.has_key('label'):
+            if 'label' in self.attribs:
                 if len(self.sections) > 0:
                     if multiline:
                         # Find maximum label width
@@ -299,7 +299,7 @@ class Node:
     def complementAttributes(self, node):
         """ from node copy all new attributes, that do not exist in self """
         for a in node.attribs:
-            if not self.attribs.has_key(a):
+            if a not in self.attribs:
                 self.attribs[a] = node.attribs[a]
                 
     def exportDot(self, o, conf):
@@ -326,86 +326,86 @@ class Node:
 
     def exportGraphml(self, doc, parent, conf):        
         """ export the node in Graphml format and append it to the parent XML node """
-        node = doc.createElement(u'node')
-        node.setAttribute(u'id',u'n%d' % self.id)
+        node = doc.createElement('node')
+        node.setAttribute('id','n%d' % self.id)
         
-        data0 = doc.createElement(u'data')
-        data0.setAttribute(u'key', u'd0')
+        data0 = doc.createElement('data')
+        data0.setAttribute('key', 'd0')
 
         exportUml = False
         if len(self.sections) > 0 and conf.NodeUml and not conf.LumpAttributes:
             exportUml = True
-            snode = doc.createElement(u'y:UMLClassNode')
+            snode = doc.createElement('y:UMLClassNode')
         else:
-            snode = doc.createElement(u'y:ShapeNode')
-        geom = doc.createElement(u'y:Geometry')
-        geom.setAttribute(u'height',u'30.0')
-        geom.setAttribute(u'width',u'30.0')
-        geom.setAttribute(u'x',u'0.0')
-        geom.setAttribute(u'y',u'0.0')
+            snode = doc.createElement('y:ShapeNode')
+        geom = doc.createElement('y:Geometry')
+        geom.setAttribute('height','30.0')
+        geom.setAttribute('width','30.0')
+        geom.setAttribute('x','0.0')
+        geom.setAttribute('y','0.0')
         snode.appendChild(geom)
         if 'fillcolor' in self.attribs:
             color = getColorAttribute(self.attribs, 'fillcolor', conf.DefaultNodeColor, conf)
         else:
             color = getColorAttribute(self.attribs, 'color', conf.DefaultNodeColor, conf)
-        fill = doc.createElement(u'y:Fill')
-        fill.setAttribute(u'color',u'%s' % color)
-        fill.setAttribute(u'transparent',u'false')
+        fill = doc.createElement('y:Fill')
+        fill.setAttribute('color','%s' % color)
+        fill.setAttribute('transparent','false')
         snode.appendChild(fill)
-        border = doc.createElement(u'y:BorderStyle')
-        border.setAttribute(u'color',u'#000000')
-        border.setAttribute(u'type',u'line')
-        border.setAttribute(u'width',u'1.0')
+        border = doc.createElement('y:BorderStyle')
+        border.setAttribute('color','#000000')
+        border.setAttribute('type','line')
+        border.setAttribute('width','1.0')
         snode.appendChild(border)
         color = getColorAttribute(self.attribs, 'fontcolor', conf.DefaultNodeTextColor, conf)        
-        label = doc.createElement(u'y:NodeLabel')
+        label = doc.createElement('y:NodeLabel')
         if conf.LumpAttributes:
-            label.setAttribute(u'alignment',u'left')
+            label.setAttribute('alignment','left')
         else:
-            label.setAttribute(u'alignment',u'center')
-        label.setAttribute(u'autoSizePolicy',u'content')
-        label.setAttribute(u'fontFamily',u'Dialog')
-        label.setAttribute(u'fontSize',u'12')
-        label.setAttribute(u'fontStyle',u'plain')
-        label.setAttribute(u'hasBackgroundColor',u'false')
-        label.setAttribute(u'hasLineColor',u'false')
-        label.setAttribute(u'modelName',u'internal')
-        label.setAttribute(u'modelPosition',u'c')
-        label.setAttribute(u'textColor',u'%s' % color)
-        label.setAttribute(u'visible',u'true')
+            label.setAttribute('alignment','center')
+        label.setAttribute('autoSizePolicy','content')
+        label.setAttribute('fontFamily','Dialog')
+        label.setAttribute('fontSize','12')
+        label.setAttribute('fontStyle','plain')
+        label.setAttribute('hasBackgroundColor','false')
+        label.setAttribute('hasLineColor','false')
+        label.setAttribute('modelName','internal')
+        label.setAttribute('modelPosition','c')
+        label.setAttribute('textColor','%s' % color)
+        label.setAttribute('visible','true')
         nodeLabelText = escapeNewlines(self.getLabel(conf, True))
         if conf.LumpAttributes:
             # Find maximum label width
             width = self.getLabelWidth(conf, True)
             nodeLabelText += '\n' + conf.SepChar*width + '\n'
-            nodeLabelText += u'%s\n' % '\n'.join(self.sections[1])
+            nodeLabelText += '%s\n' % '\n'.join(self.sections[1])
             nodeLabelText += conf.SepChar*width + '\n'
-            nodeLabelText += u'%s' % '\n'.join(self.sections[2])
-        label.appendChild(doc.createTextNode(u'%s' % nodeLabelText))        
+            nodeLabelText += '%s' % '\n'.join(self.sections[2])
+        label.appendChild(doc.createTextNode('%s' % nodeLabelText))        
         snode.appendChild(label)
         if exportUml and not conf.LumpAttributes:
-            shape = doc.createElement(u'y:UML')
-            shape.setAttribute(u'clipContent',u'true')
-            shape.setAttribute(u'constraint',u'')
-            shape.setAttribute(u'omitDetails',u'false')
-            shape.setAttribute(u'stereotype',u'') 
-            shape.setAttribute(u'use3DEffect',u'true')
+            shape = doc.createElement('y:UML')
+            shape.setAttribute('clipContent','true')
+            shape.setAttribute('constraint','')
+            shape.setAttribute('omitDetails','false')
+            shape.setAttribute('stereotype','') 
+            shape.setAttribute('use3DEffect','true')
      
-            alabel = doc.createElement(u'y:AttributeLabel')
-            alabel.appendChild(doc.createTextNode(u'%s' % '\n'.join(self.sections[1])))
+            alabel = doc.createElement('y:AttributeLabel')
+            alabel.appendChild(doc.createTextNode('%s' % '\n'.join(self.sections[1])))
             shape.appendChild(alabel)
-            mlabel = doc.createElement(u'y:MethodLabel')
-            mlabel.appendChild(doc.createTextNode(u'%s' % '\n'.join(self.sections[2])))
+            mlabel = doc.createElement('y:MethodLabel')
+            mlabel.appendChild(doc.createTextNode('%s' % '\n'.join(self.sections[2])))
             shape.appendChild(mlabel)
         else:
-            shape = doc.createElement(u'y:Shape')
-            shape.setAttribute(u'type',u'ellipse')
+            shape = doc.createElement('y:Shape')
+            shape.setAttribute('type','rectangle')
         snode.appendChild(shape)
         data0.appendChild(snode)
         node.appendChild(data0)
 
-        data1 = doc.createElement(u'data')
-        data1.setAttribute(u'key', u'd1')
+        data1 = doc.createElement('data')
+        data1.setAttribute('key', 'd1')
         node.appendChild(data1)
         
         parent.appendChild(node)
@@ -455,15 +455,15 @@ class Edge:
     def getLabel(self, nodes, conf):
         """ return the label of the edge """
         if conf.EdgeLabels:
-            if self.attribs.has_key('label'):
+            if 'label' in self.attribs:
                 return self.attribs['label']
             else:
                 if conf.EdgeLabelsAutoComplete:
                     srclink = self.src
                     destlink = self.dest
-                    if (nodes[self.src].attribs.has_key('label')):
+                    if ('label' in nodes[self.src].attribs):
                         srclink = nodes[self.src].attribs['label']
-                    if (nodes[self.dest].attribs.has_key('label')):
+                    if ('label' in nodes[self.dest].attribs):
                         destlink = nodes[self.dest].attribs['label']
                     return "%s -> %s" % (srclink, destlink)
                 else:
@@ -474,7 +474,7 @@ class Edge:
     def complementAttributes(self, edge):
         """ from edge copy all new attributes, that do not exist in self """
         for a in edge.attribs:
-            if not self.attribs.has_key(a):
+            if a not in self.attribs:
                 self.attribs[a] = edge.attribs[a]
                 
     def exportDot(self, o, nodes, conf):
@@ -505,65 +505,63 @@ class Edge:
 
     def exportGraphml(self, doc, parent, nodes, conf):
         """ export the edge in Graphml format and append it to the parent XML node """
-        edge = doc.createElement(u'edge')
-        edge.setAttribute(u'id',u'e%d' % self.id)
-        edge.setAttribute(u'source',u'n%d' % nodes[self.src].id)
-        edge.setAttribute(u'target',u'n%d' % nodes[self.dest].id)
+        edge = doc.createElement('edge')
+        edge.setAttribute('id','e%d' % self.id)
+        edge.setAttribute('source','n%d' % nodes[self.src].id)
+        edge.setAttribute('target','n%d' % nodes[self.dest].id)
         
-        data2 = doc.createElement(u'data')
-        data2.setAttribute(u'key', u'd2')
+        data2 = doc.createElement('data')
+        data2.setAttribute('key', 'd2')
 
-        pedge = doc.createElement(u'y:BezierEdge')
-        line = doc.createElement(u'y:LineStyle')
+        pedge = doc.createElement('y:PolyLineEdge')
+        line = doc.createElement('y:LineStyle')
         color = getColorAttribute(self.attribs, 'color', conf.DefaultEdgeColor, conf)
-        line.setAttribute(u'color',u'%s' % color)
-        line.setAttribute(u'type', u'line')
-        if self.attribs.has_key('penwidth'):
-            line.setAttribute(u'width', u'%s' % self.attribs['penwidth'])
+        line.setAttribute('color','%s' % color)
+        line.setAttribute('type', 'line')
+        if 'penwidth' in self.attribs:
+            line.setAttribute('width', '%s' % self.attribs['penwidth'])
         else:
-            line.setAttribute(u'width', u'1.0')
+            line.setAttribute('width', '1.0')
         pedge.appendChild(line)
-        arrow = doc.createElement(u'y:Arrows')
+        arrow = doc.createElement('y:Arrows')
         arrow_tail = conf.DefaultArrowTail
         arrow_head = conf.DefaultArrowHead
         if conf.Arrows:
-            if self.attribs.has_key('arrowtail'):
+            if 'arrowtail' in self.attribs:
                 arrow_tail = self.attribs['arrowtail']
-            if self.attribs.has_key('arrowhead'):
+            if 'arrowhead' in self.attribs:
                 arrow_head = self.attribs['arrowhead']
-        arrow.setAttribute(u'source',u'%s' % arrow_tail)                
-        arrow.setAttribute(u'target',u'%s' % arrow_head)                
+        arrow.setAttribute('source','%s' % arrow_tail)                
+        arrow.setAttribute('target','%s' % arrow_head)                
         pedge.appendChild(arrow)
         if conf.EdgeLabels:
             tlabel = self.getLabel(nodes, conf)
             if tlabel != "":
-                if (tlabel.endswith(u' (Domain>Range)')):
-                    tlabel = tlabel[:-15]
-                label = doc.createElement(u'y:EdgeLabel')
+                label = doc.createElement('y:EdgeLabel')
                 color = getColorAttribute(self.attribs, 'fontcolor', conf.DefaultEdgeTextColor, conf)
-                label.setAttribute(u'alignment',u'center')
-                label.setAttribute(u'distance',u'2.0')
-                label.setAttribute(u'fontFamily',u'Dialog')
-                label.setAttribute(u'fontSize',u'12')
-                label.setAttribute(u'fontStyle',u'plain')
-                label.setAttribute(u'hasBackgroundColor',u'false')
-                label.setAttribute(u'hasLineColor',u'false')
-                label.setAttribute(u'modelName',u'six_pos')
-                label.setAttribute(u'modelPosition',u'tail')
-                label.setAttribute(u'textColor',u'%s' % color)
-                label.setAttribute(u'visible',u'true')
-                label.setAttribute(u'preferredPlacement',u'anywhere')
-                label.setAttribute(u'ratio',u'0.5')
-                label.appendChild(doc.createTextNode(u'%s' % escapeNewlines(tlabel)))        
+                label.setAttribute('alignment','center')
+                label.setAttribute('distance','2.0')
+                label.setAttribute('fontFamily','Dialog')
+                label.setAttribute('fontSize','12')
+                label.setAttribute('fontStyle','plain')
+                label.setAttribute('hasBackgroundColor','false')
+                label.setAttribute('hasLineColor','false')
+                label.setAttribute('modelName','six_pos')
+                label.setAttribute('modelPosition','tail')
+                label.setAttribute('textColor','%s' % color)
+                label.setAttribute('visible','true')
+                label.setAttribute('preferredPlacement','anywhere')
+                label.setAttribute('ratio','0.5')
+                label.appendChild(doc.createTextNode('%s' % escapeNewlines(tlabel)))        
                 pedge.appendChild(label)
-        bend = doc.createElement(u'y:BendStyle')      
-        bend.setAttribute(u'smoothed', u'true')
+        bend = doc.createElement('y:BendStyle')      
+        bend.setAttribute('smoothed', 'false')
         pedge.appendChild(bend)
         data2.appendChild(pedge)
         edge.appendChild(data2)
 
-        data3 = doc.createElement(u'data')
-        data3.setAttribute(u'key', u'd3')
+        data3 = doc.createElement('data')
+        data3.setAttribute('key', 'd3')
         edge.appendChild(data3)
         
         parent.appendChild(edge)

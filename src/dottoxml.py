@@ -17,7 +17,6 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 """
   %dottoxml.py [options] <infile.dot> <outfile.graphml>
-
   convert a DOT file to Graphml XML (and various other formats)
 """
 
@@ -31,14 +30,14 @@ import dot
 usgmsg = "Usage: dottoxml.py [options] infile.dot outfile.graphml"
 
 def usage():
-    print "dottoxml 1.6, 2014-04-10, Dirk Baechle\n"
-    print usgmsg
-    print "Hint: Try '-h' or '--help' for further infos!"
+    print("dottoxml 1.6, 2014-04-10, Dirk Baechle\n")
+    print(usgmsg)
+    print("Hint: Try '-h' or '--help' for further infos!")
 
 def exportDot(o, nodes, edges, options):
     o.write("graph [\n")
 
-    for k,nod in nodes.iteritems():
+    for k,nod in nodes.items():
         nod.exportDot(o,options)
     for el in edges:
         el.exportDot(o,nodes,options)
@@ -49,7 +48,7 @@ def exportGML(o, nodes, edges, options):
     o.write("  directed 1\n")
     o.write("  IsPlanar 1\n")
 
-    for k,nod in nodes.iteritems():
+    for k,nod in nodes.items():
         nod.exportGML(o,options)
     for el in edges:
         el.exportGML(o,nodes,options)
@@ -59,69 +58,68 @@ def exportGML(o, nodes, edges, options):
 def exportGraphml(o, nodes, edges, options):
     import xml.dom.minidom
     doc = xml.dom.minidom.Document()
-    root = doc.createElement(u'graphml')
-    root.setAttribute(u'xmlns',u'http://graphml.graphdrawing.org/xmlns')
-    root.setAttribute(u'xmlns:xsi',u'http://www.w3.org/2001/XMLSchema-instance')
-    root.setAttribute(u'xmlns:y',u'http://www.yworks.com/xml/graphml')
-    root.setAttribute(u'xsi:schemaLocation',u'http://graphml.graphdrawing.org/xmlns http://www.yworks.com/xml/schema/graphml/1.0/ygraphml.xsd')
+    root = doc.createElement('graphml')
+    root.setAttribute('xmlns','http://graphml.graphdrawing.org/xmlns')
+    root.setAttribute('xmlns:xsi','http://www.w3.org/2001/XMLSchema-instance')
+    root.setAttribute('xmlns:y','http://www.yworks.com/xml/graphml')
+    root.setAttribute('xsi:schemaLocation','http://graphml.graphdrawing.org/xmlns http://www.yworks.com/xml/schema/graphml/1.0/ygraphml.xsd')
     doc.appendChild(root)        
-    key = doc.createElement(u'key')
-    key.setAttribute(u'for',u'node')    
-    key.setAttribute(u'id',u'd0')    
-    key.setAttribute(u'yfiles.type',u'nodegraphics')    
+    key = doc.createElement('key')
+    key.setAttribute('for','node')    
+    key.setAttribute('id','d0')    
+    key.setAttribute('yfiles.type','nodegraphics')    
     root.appendChild(key)
 
-    key = doc.createElement(u'key')
-    key.setAttribute(u'attr.name',u'description')    
-    key.setAttribute(u'attr.type',u'string')    
-    key.setAttribute(u'for',u'node')    
-    key.setAttribute(u'id',u'd1')    
+    key = doc.createElement('key')
+    key.setAttribute('attr.name','description')    
+    key.setAttribute('attr.type','string')    
+    key.setAttribute('for','node')    
+    key.setAttribute('id','d1')    
     root.appendChild(key)
 
-    key = doc.createElement(u'key')
-    key.setAttribute(u'for',u'edge')    
-    key.setAttribute(u'id',u'd2')    
-    key.setAttribute(u'yfiles.type',u'edgegraphics')    
+    key = doc.createElement('key')
+    key.setAttribute('for','edge')    
+    key.setAttribute('id','d2')    
+    key.setAttribute('yfiles.type','edgegraphics')    
     root.appendChild(key)
 
-    key = doc.createElement(u'key')
-    key.setAttribute(u'attr.name',u'description')    
-    key.setAttribute(u'attr.type',u'string')    
-    key.setAttribute(u'for',u'edge')    
-    key.setAttribute(u'id',u'd3')    
+    key = doc.createElement('key')
+    key.setAttribute('attr.name','description')    
+    key.setAttribute('attr.type','string')    
+    key.setAttribute('for','edge')    
+    key.setAttribute('id','d3')    
     root.appendChild(key)
 
-    key = doc.createElement(u'key')
-    key.setAttribute(u'for',u'graphml')    
-    key.setAttribute(u'id',u'd4')    
-    key.setAttribute(u'yfiles.type',u'resources')    
+    key = doc.createElement('key')
+    key.setAttribute('for','graphml')    
+    key.setAttribute('id','d4')    
+    key.setAttribute('yfiles.type','resources')    
     root.appendChild(key)
 
-    graph = doc.createElement(u'graph')
-    graph.setAttribute(u'edgedefault',u'directed')    
-    graph.setAttribute(u'id',u'G')    
-    graph.setAttribute(u'parse.edges',u'%d' % len(edges))   
-    graph.setAttribute(u'parse.nodes',u'%d' % len(nodes))
-    graph.setAttribute(u'parse.order', u'free')    
+    graph = doc.createElement('graph')
+    graph.setAttribute('edgedefault','directed')    
+    graph.setAttribute('id','G')    
+    graph.setAttribute('parse.edges','%d' % len(edges))   
+    graph.setAttribute('parse.nodes','%d' % len(nodes))
+    graph.setAttribute('parse.order', 'free')    
     
-    for k,nod in nodes.iteritems():
+    for k,nod in nodes.items():
         nod.exportGraphml(doc, graph, options)
     for el in edges:
         el.exportGraphml(doc, graph, nodes, options)
 
     root.appendChild(graph)
     
-    data = doc.createElement(u'data')
-    data.setAttribute(u'key',u'd4')    
-    res = doc.createElement(u'y:Resources')
+    data = doc.createElement('data')
+    data.setAttribute('key','d4')    
+    res = doc.createElement('y:Resources')
     data.appendChild(res)    
     root.appendChild(data)
     
-    o.write(doc.toxml(encoding="utf-8"))
-
+    o.write(str(doc.toxml(encoding="UTF-8")))
 def exportGDF(o, nodes, edges, options):
     o.write("nodedef> name\n")
-    for k,nod in nodes.iteritems():
+    for k,nod in nodes.items():
         nod.exportGDF(o, options)
     for el in edges:
         el.exportGDF(o,nodes,options)
@@ -163,7 +161,7 @@ def main():
                       action='store_true', dest='EdgeLabelsAutoComplete', default=False,
                       help='auto-complete edge labels')
     parser.add_option('--ah', '--arrowhead',
-                      action='store', dest='DefaultArrowHead', default='standard', metavar='TYPE',
+                      action='store', dest='DefaultArrowHead', default='none', metavar='TYPE',
                       help='sets the default appearance of arrow heads for edges (normal|diamond|dot|...) [default : %default]')
     parser.add_option('--at', '--arrowtail',
                       action='store', dest='DefaultArrowTail', default='none', metavar='TYPE',
@@ -208,14 +206,14 @@ def main():
         options.OutputEncoding = preferredEncoding
     
     if options.verbose:
-        print "Input file: %s " % infile
-        print "Output file: %s " % outfile
-        print "Output format: %s" % options.format.lower()
-        print "Input encoding: %s" % options.InputEncoding
+        print("Input file: %s " % infile)
+        print("Output file: %s " % outfile)
+        print("Output format: %s" % options.format.lower())
+        print("Input encoding: %s" % options.InputEncoding)
         if options.format.lower() == "graphml":
-            print "Output encoding: utf-8 (fix for Graphml)"
+            print("Output encoding: utf-8 (fix for Graphml)")
         else:
-            print "Output encoding: %s" % options.OutputEncoding
+            print("Output encoding: %s" % options.OutputEncoding)
 
     # Collect nodes and edges
     nodes = {}
@@ -230,15 +228,16 @@ def main():
 
     idx = 0
     while idx < len(content):
-        l = unicode(content[idx], options.InputEncoding)
+        l = str(content[idx])#(content[idx].encode(), options.InputEncoding)
         if '->' in l:
             # Check for multiline edge
             if '[' in l and ']' not in l:
                 ml = ""
                 while ']' not in ml:
                     idx += 1
-                    ml = unicode(content[idx], options.InputEncoding)
+                    ml = str(content[idx])
                     l = ' '.join([l.rstrip(), ml.lstrip()])
+                    
             # Process edge
             e = dot.Edge()
             e.initFromString(l)
@@ -253,7 +252,7 @@ def main():
                 ml = ""
                 while ']' not in ml:
                     idx += 1
-                    ml = unicode(content[idx], options.InputEncoding)
+                    ml = str(content[idx])
                     l = ' '.join([l.rstrip(), ml.lstrip()])
             # Process node
             n = dot.Node()
@@ -280,18 +279,19 @@ def main():
                 if ienc != "":
                     options.InputEncoding = ienc
                     if options.verbose:
-                        print "Info: Picked up input encoding '%s' from the DOT file." % ienc
+                        print("Info: Picked up input encoding '%s' from the DOT file." % ienc)
         idx += 1
-
+            
+                
     # Add single nodes, if required
     for e in edges:
-        if not nodes.has_key(e.src):
+        if e.src not in nodes:
             n = dot.Node()
             n.label = e.src
             n.id = nid
             nid += 1
             nodes[e.src] = n
-        if not nodes.has_key(e.dest):
+        if e.dest not in nodes:
             n = dot.Node()
             n.label = e.dest
             n.id = nid
@@ -301,17 +301,17 @@ def main():
         nodes[e.dest].referenced = True
 
     if options.verbose:
-        print "\nNodes: %d " % len(nodes)
-        print "Edges: %d " % len(edges)
+        print("\nNodes: %d " % len(nodes))
+        print("Edges: %d " % len(edges))
     
     if options.sweep:
         rnodes = {}
-        for key, n in nodes.iteritems():
+        for key, n in nodes.items():
             if n.referenced:
                 rnodes[key] = n
         nodes = rnodes
         if options.verbose:
-            print "\nNodes after sweep: %d " % len(nodes)
+            print("\nNodes after sweep: %d " % len(nodes))
     
     # Output
     o = open(outfile, 'w')
@@ -327,8 +327,7 @@ def main():
     o.close()
 
     if options.verbose:
-        print "\nDone."
+        print("\nDone.")
 
 if __name__ == '__main__':
     main()
-    
